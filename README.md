@@ -1,2 +1,2 @@
 # FSO_04
-Repository for excercises in Part 3 of Full Stack Open: https://fullstackopen.com/en/part4
+Repository for excercises in Part 4 of Full Stack Open: https://fullstackopen.com/en/part4
