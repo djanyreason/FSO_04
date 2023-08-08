@@ -1,0 +1,32 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "Full Stack Open pt. 4 bloglist project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djanyreason/FSO_04.git#main"
+  },
+  "author": "John F. Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djanyreason/FSO_04/issues"
+  },
+  "homepage": "https://github.com/djanyreason/FSO_04/tree/main#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.4.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.46.0",
+    "nodemon": "^3.0.1"
+  }
+}
