@@ -1,7 +1,7 @@
 const blogs = require('./blogListTestData');
 const listHelper = require('../utils/list_helper');
 
-describe('total likes', () => {
+describe('favorite blog', () => {
   test('of empty list is blank',
     () => expect(listHelper.favoriteBlog([])).toEqual({
       title: '',
@@ -43,7 +43,7 @@ describe('total likes', () => {
 
   const extraFavBlog = listHelper.favoriteBlog(extraBlogs);
 
-  test('of a list with multiple tied faves',
+  test('of a list with multiple tied faves returns correctly',
     () => expect(
       extraFavBlog.likes === maxLikes &&
       extraBlogs.filter(blog =>
@@ -51,5 +51,40 @@ describe('total likes', () => {
         blog.author === extraFavBlog.author &&
         blog.likes === extraFavBlog.likes
       ).length > 0)
+      .toBe(true));
+});
+
+describe('most prolific author', () => {
+  test('of empty list is blank',
+    () => expect(listHelper.mostBlogs([])).toEqual({
+      author: '',
+      blogs: 0
+    }));
+
+  test('when list has only one blog returns its author with 1 blog',
+    () => expect(listHelper.mostBlogs(blogs.slice(0,1)))
+      .toEqual({
+        author: blogs[0].author,
+        blogs: 1
+      }));
+
+  test('of a bigger list is calculated right',
+    () => expect(listHelper.mostBlogs(blogs))
+      .toEqual({
+        author: 'Robert C. Martin',
+        blogs: 3
+      }));
+
+  const extraProlificBlogs = listHelper.mostBlogs(blogs.concat({
+    title: 'Test Tied Title',
+    author: 'Edsger W. Dijkstra',
+    likes: 0
+  }));
+
+  test('of a list with multiple tied faves returns correctly',
+    () => expect(
+      extraProlificBlogs.blogs === 3 &&
+      (extraProlificBlogs.author === 'Edsger W. Dijkstra' ||
+      extraProlificBlogs.author === 'Robert C. Martin'))
       .toBe(true));
 });
