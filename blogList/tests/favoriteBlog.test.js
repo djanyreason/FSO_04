@@ -88,3 +88,38 @@ describe('most prolific author', () => {
       extraProlificBlogs.author === 'Robert C. Martin'))
       .toBe(true));
 });
+
+describe('most liked author', () => {
+  test('of empty list is blank',
+    () => expect(listHelper.mostLikes([])).toEqual({
+      author: '',
+      likes: 0
+    }));
+
+  test('when list has only one blog returns its author with blog\'s likes',
+    () => expect(listHelper.mostLikes(blogs.slice(0,1)))
+      .toEqual({
+        author: blogs[0].author,
+        likes: blogs[0].likes
+      }));
+
+  test('of a bigger list is calculated right',
+    () => expect(listHelper.mostLikes(blogs))
+      .toEqual({
+        author: 'Edsger W. Dijkstra',
+        likes: 17
+      }));
+
+  const extraProlificBlogs = listHelper.mostLikes(blogs.concat({
+    title: 'Test Tied Title',
+    author: 'Robert C. Martin',
+    likes: 5
+  }));
+
+  test('of a list with multiple tied faves returns correctly',
+    () => expect(
+      extraProlificBlogs.likes === 17 &&
+      (extraProlificBlogs.author === 'Edsger W. Dijkstra' ||
+      extraProlificBlogs.author === 'Robert C. Martin'))
+      .toBe(true));
+});
