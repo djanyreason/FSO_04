@@ -74,8 +74,6 @@ test('a new blog without likes sets likes to 0', async () => {
   expect(moreBlogs).toHaveLength(blogs.length + 1);
 
   expect(moreBlogs.reduce((check, blog) => {
-    if(blog.title === newBlog.title) console.log(blog);
-
     return check
       ? check
       : (blog.title === newBlog.title)
@@ -83,6 +81,40 @@ test('a new blog without likes sets likes to 0', async () => {
         && (blog.url === newBlog.url)
         && (blog.likes === 0);
   }, false)).toEqual(true);
+});
+
+test('a new blog without title can\'t POST', async () => {
+  const newBlog = {
+    author: 'Ken Tremendous',
+    url: 'http://www.firejoemorgan.com/2008/01/honestly-one-of-weirdest-things-i-have.html',
+    likes: 2632
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
+
+  const moreBlogs = await helper.blogsInDb();
+
+  expect(moreBlogs).toHaveLength(blogs.length);
+});
+
+test('a new blog without URL can\'t POST', async () => {
+  const newBlog = {
+    title: 'Honestly One of the Weirdest Things I Have Ever Read',
+    author: 'Ken Tremendous',
+    likes: 2632
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
+
+  const moreBlogs = await helper.blogsInDb();
+
+  expect(moreBlogs).toHaveLength(blogs.length);
 });
 
 afterAll(async () => {
