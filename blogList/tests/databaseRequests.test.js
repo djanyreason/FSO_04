@@ -136,6 +136,56 @@ test('deletion succeeds with status code 204 if id is valid', async () => {
   expect(contents).not.toContain(blogToDelete.title);
 });
 
+describe('updating blog likes', () => {
+  test('update succeeds with a valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const updatedBlog = { ...blogToUpdate, likes: (blogToUpdate.likes + 1) };
+
+    const resultBlog = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd.reduce((match, blog) =>
+      match
+        ? match
+        : (blog.title === blogToUpdate.title
+          ? blog
+          : null)
+    , null).likes).toEqual(updatedBlog.likes);
+  });
+
+  test('returns status code 200 and body null if ID does not exist', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const updatedBlog = { ...blogToUpdate, likes: (blogToUpdate.likes + 1) };
+    const validNonexistingId = await helper.nonExistingID();
+
+    const result = await api
+      .put(`/api/blogs/${validNonexistingId}`)
+      .send(updatedBlog)
+      .expect(200);
+
+    expect(result.body).toEqual(null);
+  });
+
+  test('fails with statuscode 400 if id is invalid', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const updatedBlog = { ...blogToUpdate, likes: (blogToUpdate.likes + 1) };
+    const invalidId = '5a3d5da59070081a82a3445';
+
+    await api
+      .put(`/api/blogs/${invalidId}`)
+      .send(updatedBlog)
+      .expect(400);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
