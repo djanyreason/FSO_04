@@ -6,7 +6,12 @@ blogListRouter.get('/', async (request, response) => {
 });
 
 blogListRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body);
+  const blog = new Blog({
+    title: request.body.title,
+    author: request.body.author || 'Unknown',
+    url: request.body.url,
+    likes: request.body.likes || 0
+  });
 
   response.status(201).json(await blog.save());
 });

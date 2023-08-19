@@ -56,6 +56,35 @@ test('a valid blog can be added', async () => {
   }, false)).toEqual(true);
 });
 
+test('a new blog without likes sets likes to 0', async () => {
+  const newBlog = {
+    title: 'Honestly One of the Weirdest Things I Have Ever Read',
+    author: 'Ken Tremendous',
+    url: 'http://www.firejoemorgan.com/2008/01/honestly-one-of-weirdest-things-i-have.html'
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const moreBlogs = await helper.blogsInDb();
+
+  expect(moreBlogs).toHaveLength(blogs.length + 1);
+
+  expect(moreBlogs.reduce((check, blog) => {
+    if(blog.title === newBlog.title) console.log(blog);
+
+    return check
+      ? check
+      : (blog.title === newBlog.title)
+        && (blog.author === newBlog.author)
+        && (blog.url === newBlog.url)
+        && (blog.likes === 0);
+  }, false)).toEqual(true);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
