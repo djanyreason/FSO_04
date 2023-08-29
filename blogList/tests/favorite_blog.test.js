@@ -1,4 +1,4 @@
-const { blogs } = require('./blogListTestData');
+const { blogs } = require('./blog_list_test_data');
 const listHelper = require('../utils/list_helper');
 
 describe('favorite blog', () => {
