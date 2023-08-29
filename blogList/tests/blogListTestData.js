@@ -49,4 +49,12 @@ const blogs = [
   }
 ];
 
-module.exports = blogs;
+const users = [
+  {
+    username: 'testUser',
+    name: 'Test User',
+    password: 'testPassword' //not set as a Hash because unimportant test data
+  }
+];
+
+module.exports = { blogs, users };
