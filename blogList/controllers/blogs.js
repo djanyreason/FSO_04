@@ -33,45 +33,54 @@ blogListRouter.post('/', async (request, response) => {
 });
 
 blogListRouter.delete('/:id', async (request, response) => {
-  const thisBlog = await Blog.findById(request.params.id);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if(!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+
+  const thisUser = await User.findById(decodedToken.id.toString());
+
+  if (thisUser.blogs
+    .filter(aBlog => aBlog.toString() === request.params.id)
+    .length
+    === 0
+  ) {
+    return response.status(401).json({ error: 'incorrect user' });
+  }
+
   await Blog.findByIdAndRemove(request.params.id);
 
-  if(thisBlog) {
-    const thisUser = await User.findById(thisBlog.user.toString());
-
-    console.log(thisUser.blogs.length);
-    thisUser.blogs = thisUser.blogs.filter(aBlog => {
-      console.log(aBlog.toString(), request.params.id, aBlog.toString() !== request.params.id);
-      return aBlog.toString() !== request.params.id;
-    });
-    console.log(thisUser.blogs.length);
-    await thisUser.save();
-  }
+  thisUser.blogs = thisUser.blogs.filter(aBlog => aBlog.toString() !== request.params.id);
+  await thisUser.save();
 
   response.status(204).end();
 });
 
 blogListRouter.put('/:id', async (request, response) => {
-  const users = await User.find({});
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if(!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+
+  const thisUser = await User.findById(decodedToken.id.toString());
+
+  if (thisUser.blogs
+    .filter(aBlog => aBlog.toString() === request.params.id)
+    .length
+    === 0
+  ) {
+    return response.status(401).json({ error: 'incorrect user' });
+  }
 
   const blog = {
     title: request.body.title,
     author: request.body.author,
     url: request.body.url,
     likes: request.body.likes,
-    user: users[0]._id
+    user: thisUser._id
   };
 
   const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
-
-  if(savedBlog) {
-    if(users[0].blogs
-      .filter(aBlog => aBlog.toString() === savedBlog._id.toString())
-      .length === 0) {
-      users[0].blogs = users[0].blogs.concat(savedBlog._id);
-      await users[0].save();
-    }
-  }
 
   response.json(savedBlog);
 });
