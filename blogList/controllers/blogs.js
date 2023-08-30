@@ -1,6 +1,7 @@
 const blogListRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const { userExtractor } = require('../utils/middleware');
 const jwt = require('jsonwebtoken');
 
 blogListRouter.get('/', async (request, response) => {
@@ -9,13 +10,13 @@ blogListRouter.get('/', async (request, response) => {
     .populate('user', { username: 1, name: 1, id: 1 }));
 });
 
-blogListRouter.post('/', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+blogListRouter.post('/', userExtractor, async (request, response) => {
+  /*const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if(!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' });
   }
-
-  const user = await User.findById(decodedToken.id);
+*/
+  const user = request.user;//await User.findById(decodedToken.id);
 
   const blog = new Blog({
     title: request.body.title,
@@ -32,13 +33,13 @@ blogListRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogListRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+blogListRouter.delete('/:id', userExtractor, async (request, response) => {
+  /*const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if(!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' });
   }
-
-  const thisUser = await User.findById(decodedToken.id.toString());
+  */
+  const thisUser = request.user;//await User.findById(decodedToken.id.toString());
 
   if (thisUser.blogs
     .filter(aBlog => aBlog.toString() === request.params.id)
@@ -56,13 +57,13 @@ blogListRouter.delete('/:id', async (request, response) => {
   response.status(204).end();
 });
 
-blogListRouter.put('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+blogListRouter.put('/:id', userExtractor, async (request, response) => {
+  /*const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if(!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' });
   }
-
-  const thisUser = await User.findById(decodedToken.id.toString());
+  */
+  const thisUser = request.user;//await User.findById(decodedToken.id.toString());
 
   if (thisUser.blogs
     .filter(aBlog => aBlog.toString() === request.params.id)
