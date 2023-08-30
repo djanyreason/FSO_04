@@ -13,6 +13,7 @@ mongoose.connect(config.BLOGDB_URI);
 
 app.use(cors());
 app.use(express.json());
+app.use(middleware.tokenExtractor);
 
 app.use('/api/blogs', blogListRouter);
 app.use('/api/users', userRouter);
