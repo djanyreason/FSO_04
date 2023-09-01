@@ -1,3 +1,5 @@
+const bcyrpt = require('bcrypt');
+
 const blogs = [
   {
     _id: '5a422a851b54a676234d17f7',
@@ -53,7 +55,12 @@ const users = [
   {
     username: 'testUser',
     name: 'Test User',
-    password: 'testPassword' //not set as a Hash because unimportant test data
+    password: 'testPassword'
+  },
+  {
+    username: 'anotherUser',
+    name: 'User Two',
+    password: 'wordOfPass'
   }
 ];
 
